@@ -88,8 +88,19 @@ public abstract class AbstractDAOBase<E> extends io.dropwizard.hibernate.Abstrac
 
     protected Object validateAndCastValue(String fieldName, String fieldValue) {
         Object value = fieldValue;
+        String aliasArray[]=fieldName.split("\\.");
         try {
-            Field field = getEntityClass().getDeclaredField(fieldName);
+            Field field;
+            Integer length = aliasArray.length;
+            if(length < 2) {
+                field = this.getEntityClass().getDeclaredField(fieldName);
+            }
+            else if(length == 2) {
+                field = this.getEntityClass().getDeclaredField(aliasArray[0]).getType().getDeclaredField(aliasArray[1]);
+            }
+            else {
+                throw new UnsupportedOperationException("Two levels of alias not allowed !!!!");
+            }
             Class klazz = field.getType();
             if (klazz.isEnum()) {
                 value = Enum.valueOf(klazz, fieldValue);
