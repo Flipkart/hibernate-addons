@@ -163,11 +163,21 @@ public abstract class AbstractDAOBase<E> extends io.dropwizard.hibernate.Abstrac
 
     public long getAllCount(String sortColumn, String order, Multimap<String, String> filter) {
         List<String> notFilter = Collections.EMPTY_LIST;
-        return getAllCount(sortColumn, order, filter, notFilter);
+        return getAllCount(sortColumn, order, filter, notFilter, null);
     }
 
-    public long getAllCount(String sortColumn, String order, Multimap<String, String> filter, List<String> notFilter) {
+    public long getAllCount(String sortColumn, String order, Multimap<String, String> filter, Map<String, String> criteriaMap) {
+        List<String> notFilter = Collections.EMPTY_LIST;
+        return getAllCount(sortColumn, order, filter, notFilter, criteriaMap);
+    }
+
+    public long getAllCount(String sortColumn, String order, Multimap<String, String> filter, List<String> notFilter, Map<String, String> criteriaMap) {
         Criteria criteria = criteria();
+        if(criteriaMap != null) {
+            for(String key: criteriaMap.keySet()){
+                criteria.createCriteria(key, criteriaMap.get(key));
+            }
+        }
         setFilter(filter, criteria, notFilter);
         criteria.setProjection(Projections.rowCount());
         return (Long) criteria.uniqueResult();
@@ -175,12 +185,22 @@ public abstract class AbstractDAOBase<E> extends io.dropwizard.hibernate.Abstrac
 
     public List<E> getAll(String sortColumn, String order, Multimap<String, String> filter, int pageNumber, int pageSize) {
         List<String> notFilter = Collections.EMPTY_LIST;
-        return getAll(sortColumn, order, filter, pageNumber, pageSize, notFilter);
+        return getAll(sortColumn, order, filter, pageNumber, pageSize, notFilter, null);
+    }
+
+    public List<E> getAll(String sortColumn, String order, Multimap<String, String> filter, int pageNumber, int pageSize, Map<String, String> criteriaMap) {
+        List<String> notFilter = Collections.EMPTY_LIST;
+        return getAll(sortColumn, order, filter, pageNumber, pageSize, notFilter, criteriaMap);
     }
 
     public List<E> getAll(String sortColumn, String order, Multimap<String, String> filter, int pageNumber, int pageSize,
-        List<String> notFilter) {
+        List<String> notFilter, Map<String, String> criteriaMap) {
         Criteria criteria = criteria();
+        if(criteriaMap != null) {
+            for(String key: criteriaMap.keySet()){
+                criteria.createCriteria(key, criteriaMap.get(key));
+            }
+        }
         if (StringUtils.isNotEmpty(sortColumn)) {
             Order sort = null;
             if ("asc".equalsIgnoreCase(order)) {
