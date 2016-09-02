@@ -44,6 +44,11 @@ public abstract class AbstractDAOBase<E> extends io.dropwizard.hibernate.Abstrac
         return get(id);
     }
 
+    public List<E> findByCriteria(Map<String, List<?>> filter) {
+        Criteria criteria = buildCriteria(filter);
+        return list(criteria);
+    }
+
     protected Criteria buildCriteria(Map<String, List<?>> filter) {
         return buildCriteria(criteria(), filter);
     }
