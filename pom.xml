@@ -7,7 +7,7 @@
     <groupId>com.flipkart.hibernate</groupId>
     <artifactId>hibernate-addons</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>${project.version}</version>
     <modules>
         <module>read-write-seperation</module>
         <module>abstract-dao</module>
@@ -15,7 +15,7 @@
 
     <properties>
         <dropwizard.version>0.9.1</dropwizard.version>
-        <project.version>1.0-SNAPSHOT</project.version>
+        <project.version>1.0.0</project.version>
     </properties>
 
     <dependencies>
